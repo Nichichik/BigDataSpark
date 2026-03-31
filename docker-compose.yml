@@ -30,8 +30,8 @@ services:
       CLICKHOUSE_USER: spark_user
       CLICKHOUSE_PASSWORD: spark_password
     networks:
-      spark_network: # <-- Подключаем к нашей сети
-        ipv4_address: 172.20.1.3 # <-- Жестко даем ему этот IP
+      spark_network:
+        ipv4_address: 172.20.1.3
     ulimits:
       nofile:
         soft: 262144
