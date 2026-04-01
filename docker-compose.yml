@@ -21,7 +21,7 @@ services:
 
   clickhouse:
     image: clickhouse/clickhouse-server:latest
-    container_name: clickhouse_db
+    container_name: clickhouse-db
     ports:
       - "8123:8123"
       - "9000:9000"
@@ -30,8 +30,7 @@ services:
       CLICKHOUSE_USER: spark_user
       CLICKHOUSE_PASSWORD: spark_password
     networks:
-      spark_network:
-        ipv4_address: 172.20.1.3
+      - spark_network
     ulimits:
       nofile:
         soft: 262144
@@ -55,19 +54,14 @@ services:
       - .:/opt/spark-data
     networks:
       - spark_network
-    command: >
-      bash -c "
-      echo '=== Database is READY! Starting ETL immediately... ===' &&
-      /opt/spark/bin/spark-submit --packages org.postgresql:postgresql:42.7.2 /opt/spark-data/spark_etl_star.py &&
-      echo '=== STEP 1 DONE. Starting ClickHouse Reports... ===' &&
-      /opt/spark/bin/spark-submit --packages org.postgresql:postgresql:42.7.2,com.clickhouse:clickhouse-jdbc:0.6.0,org.apache.httpcomponents.client5:httpclient5:5.3.1 /opt/spark-data/spark_clickhouse_reports.py &&
-      echo '=== ALL DONE! LAB COMPLETED SUCCESSFULLY! ==='
-      "
+    command:
+      - bash
+      - -c
+      - |
+        /opt/spark/bin/spark-submit --packages org.postgresql:postgresql:42.7.2,ru.yandex.clickhouse:clickhouse-jdbc:0.3.2 /opt/spark-data/spark_etl_star.py
+        /opt/spark/bin/spark-submit --packages org.postgresql:postgresql:42.7.2,ru.yandex.clickhouse:clickhouse-jdbc:0.3.2 /opt/spark-data/spark_clickhouse_reports.py
+        echo '=== ALL DONE! LAB COMPLETED SUCCESSFULLY! ==='
 
 networks:
   spark_network:
     driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.0.0/16

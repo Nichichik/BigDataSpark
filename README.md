@@ -67,19 +67,24 @@
     *   Таблица `fact_sales` должна содержать `10000` строк.
     *   Выполните SQL-запросы для проверки корректности связей и данных в таблицах `dim_` и `fact_sales`.
 
-### 2. Проверка ClickHouse
+---
 
-*   **Подключение**:
-    *   Host: `localhost`, Port: `8123`, Database: `reports_db`, User: `spark_user`, Password: `spark_password`
-  *   **Проверка**:
-      *   Должны быть созданы 6 таблиц-отчетов: `report_products`, `report_customers`, `report_time`, `report_stores`, `report_suppliers`, `report_quality`.
-      *   Каждая таблица-отчет должна содержать агрегированные данные.
-      *   Выполните SQL-запросы для просмотра данных в каждой витрине 
-      Например:
-      ```sql 
-        SELECT count(*) FROM report_customers;
-        SELECT customer_first_name, customer_last_name, total_spent, orders_count, average_check
-        FROM report_customers
-        ORDER BY total_spent DESC
-        LIMIT 10;
-        ```
+### 2. Проверка ClickHouse (Аналитические витрины)
+
+*   **Параметры подключения**:
+    *   **Host**: `localhost`
+    *   **Port**: `8123`
+    *   **Database**: `reports_db`
+    *   **User**: `spark_user`
+    *   **Password**: `spark_password`
+
+*   **Проверка структуры**:
+    *   В базе данных создано **6 основных таблиц** с агрегированными данными: `report_products`, `report_customers`, `report_time`, `report_stores`, `report_suppliers`, `report_quality`.
+    *   В папке **Views** создано **18 аналитических представлений** (по 3 для каждой витрины), полностью соответствующих пунктам задания:
+
+    1.  **Витрина продуктов**: `v1_top_10_sold_products`, `v2_revenue_by_category`, `v3_product_rating_reviews`.
+    2.  **Витрина клиентов**: `v4_top_10_customers_spent`, `v5_customers_distribution_country`, `v6_customer_average_check`.
+    3.  **Витрина времени**: `v7_monthly_yearly_trends`, `v8_revenue_comparison`, `v9_avg_order_size_month`.
+    4.  **Витрина магазинов**: `v10_top_5_stores_revenue`, `v11_stores_by_location`, `v12_store_avg_check`.
+    5.  **Витрина поставщиков**: `v13_top_5_suppliers_revenue`, `v14_supplier_avg_price`, `v15_suppliers_by_country`.
+    6.  **Витрина качества**: `v16_product_rating_extremes`, `v17_rating_sales_correlation`, `v18_products_most_reviews`.
